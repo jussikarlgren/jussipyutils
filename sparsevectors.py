@@ -1,9 +1,12 @@
 import random
 import math
 from logger import logger
+error = True  # for the logger
 
-error = True
 
+# A number of functions to work with sparse vectors.
+# This could be implemented using many other Python modules;
+# some are more efficient than these but involve some more overhead.
 
 def sparseadd(onevec, othvec, weight=1, normalised=False):
     if normalised:
