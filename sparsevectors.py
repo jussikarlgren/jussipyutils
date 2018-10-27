@@ -187,15 +187,15 @@ def createpermutation(k):
 
 
 def permute(vector, permutation):
-    newvector = {}
-    try:
-        for i in range(len(permutation)):
-            if i in vector:  # why was this str(i) for a while? i forget.
-                newvector[permutation[i]] = vector[i]
-                # newvector[str(permutation[i])] = vector[str(i)]
-    except KeyError:
-        newvector = vector
-        logger("no permutation done, something wrong", error)
+    newvector = vector
+    if permutation:
+        try:
+            for i in range(len(permutation)):
+                if i in vector:
+                    newvector[permutation[i]] = vector[i]
+        except KeyError:
+            newvector = vector
+            logger("no permutation done, something wrong", error)
     return newvector
 
 
