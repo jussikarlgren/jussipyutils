@@ -82,20 +82,3 @@ def doonejsontextfile(filename, loglevel=False):
                 if str(tw) != "{}":  # never mind empty strings, no cause for alarm
                     logger("**** " + str(tw) + " " + str(len(sentencelist)), error)
     return sentencelist
-
-
-def readstats(filename: str = "/home/jussi/data/resources/finfreqcountwoutdigits.list") -> None:
-    global stats
-    stats = {}
-    with open(filename) as statsfile:
-        for statsline in statsfile:
-            values = statsline.strip().split("\t")
-            stats[values[2]] = float(values[1])
-
-
-def weight(word: str) -> float:
-    if word in stats:
-        w = -log(stats[word])
-        return w
-    else:
-        return 0.3
