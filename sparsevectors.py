@@ -231,3 +231,9 @@ def euclidean(vector, othervector):
         if j not in vector:
             s.append(othervector[j] ** 2)
     return math.sqrt(sum(s))
+
+def centroid(vectors: list):
+    c = {}
+    for v in vectors:
+        c = sparseadd(c, normalise(v))
+    return normalise(c)
