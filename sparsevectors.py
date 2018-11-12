@@ -237,3 +237,9 @@ def centroid(vectors: list):
     for v in vectors:
         c = sparseadd(c, normalise(v))
     return normalise(c)
+
+def averagedistance(origin: list, vectors: list):
+    o = 0
+    for v in vectors:
+        o += sparsecosine(origin, v)
+    return o
