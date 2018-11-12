@@ -232,14 +232,18 @@ def euclidean(vector, othervector):
             s.append(othervector[j] ** 2)
     return math.sqrt(sum(s))
 
+
 def centroid(vectors: list):
     c = {}
     for v in vectors:
         c = sparseadd(c, normalise(v))
     return normalise(c)
 
+
 def averagedistance(origin: list, vectors: list):
     o = 0
     for v in vectors:
         o += sparsecosine(origin, v)
+    if len(vectors) > 0:
+        o = o / len(vectors)
     return o
