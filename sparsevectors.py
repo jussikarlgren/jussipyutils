@@ -240,10 +240,11 @@ def centroid(vectors: list):
     return normalise(c)
 
 
-def averagedistance(origin: list, vectors: list):
+def averagedistance(origin: list, vectors: list, loglevel: bool=False):
     o = 0
     for v in vectors:
-        o += sparsecosine(origin, v)
+        s = sparsecosine(origin, v)
+        o += s
     if len(vectors) > 0:
         o = o / len(vectors)
     return o
