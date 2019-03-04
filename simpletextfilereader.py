@@ -20,7 +20,8 @@ urlpatternexpression = re.compile(r"https?://[/A-Za-z0-9\.\-\?_]+", re.IGNORECAS
 handlepattern = re.compile(r"@[A-Za-z0-9_\-±.]+", re.IGNORECASE)
 
 
-def getfilelist(resourcedirectory="/home/jussi/data/storm/fixed", pattern=re.compile(r".*irma")):
+def getfilelist(resourcedirectory:str="/home/jussi/data/storm/fixed", patternstring:str=r".*irma"):
+    pattern = re.compile(patternstring)
     filenamelist = []
     for filenamecandidate in os.listdir(resourcedirectory):
         if pattern.match(filenamecandidate):
