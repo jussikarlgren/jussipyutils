@@ -1,12 +1,14 @@
 import random
 import math
 from logger import logger
+
+
 error = True  # for the logger
 
 
 # A number of functions to work with sparse vectors.
 # This could be implemented using many other Python modules;
-# some are more efficient than these but involve some more overhead.
+# some are more efficient than these but involve more overhead.
 
 def sparseadd(onevec, othvec, weight=1, normalised=False):
     if normalised:
@@ -248,3 +250,14 @@ def averagedistance(origin: list, vectors: list, loglevel: bool=False):
     if len(vectors) > 0:
         o = o / len(vectors)
     return o
+
+
+def listify(vector, dimensionality):
+    '''Take a sparse vector which here is implemented as a dict and return its elements, filling up with zeros where
+    no elements are given in the sparse vector.'''
+    listelements = [0] * dimensionality
+    for e in vector:
+        listelements[e] = vector[e]
+    return listelements
+
+
