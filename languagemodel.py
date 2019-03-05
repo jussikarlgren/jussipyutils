@@ -1,3 +1,4 @@
+import simpletextfilereader
 from logger import logger
 from math import log
 from math import exp
@@ -79,3 +80,7 @@ class LanguageModel:
             for statsline in statsfile:
                 values = statsline.strip().split("\t")
                 stats[values[2]] = float(values[1])
+
+    def trainfromfiles(self, resourcedirectory:str):
+        simpletextfilereader.getfilelist(resourcedirectory,r"[a-zA-Z0-9].*.txt")
+        for f in
