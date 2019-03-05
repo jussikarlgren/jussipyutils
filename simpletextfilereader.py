@@ -31,10 +31,16 @@ def getfilelist(resourcedirectory:str="/home/jussi/data/storm/fixed", patternstr
     return sorted(filenamelist)
 
 
-def readtexts() -> list:
+def readtexts(json=True) -> list:
     '''Read a set of files and return sentences found in them.'''
     filenamelist = getfilelist()
-    sentences = dojsontextfiles(filenamelist, debug)
+    if json:
+        sentences = dojsontextfiles(filenamelist, debug)
+    else:
+        sentences = []
+        for f in filenamelist:
+            ss = doonerawtextfile()
+            sentences = sentences + ss
     return sentences
 
 
@@ -82,4 +88,19 @@ def doonejsontextfile(filename, loglevel=False):
             except KeyError:
                 if str(tw) != "{}":  # never mind empty strings, no cause for alarm
                     logger("**** " + str(tw) + " " + str(len(sentencelist)), error)
+    return sentencelist
+
+def doonerawtextfile(filename, loglevel=False):
+    '''Read one file with texts, one per line.'''
+    logger(filename, loglevel)
+    sentencelist = []
+    with open(filename, errors="replace", encoding='utf-8') as inputtextfile:
+        logger("Loading " + filename, loglevel)
+        for textline in inputtextfile:
+            try:
+#                words = word_tokenize(textline.lower())
+                sents = sent_tokenize(textline)
+                for sentence in sents:
+                    logger(sentence, debug)
+                    sentencelist = sentencelist + sents
     return sentencelist
