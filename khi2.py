@@ -10,7 +10,7 @@ def khi2(crosstab, loglevel=False):
     cols=d[1]  # unnecessary, but clear
     streng = "Degrees of freedom: " + str((rows-1)*(cols-1))
     streng += "Marginal sums:\n"
-    expecteds=margins3(crosstab)
+    expecteds = margins3(crosstab)
     streng += str(expecteds)
     for k in range(rows):
         for l in range(cols):
@@ -18,7 +18,7 @@ def khi2(crosstab, loglevel=False):
     streng += "\nExpected values:\n"
     streng += str(expecteds) + "\n"
     sum = 0
-    deviation=np.zeros((rows+1,cols+1))
+    deviation = np.zeros((rows+1,cols+1))
     for k in range(rows):
         for l in range(cols):
             deviation[k,l]=((expecteds[k,l]-crosstab[k,l]))
