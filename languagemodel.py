@@ -11,6 +11,13 @@ class LanguageModel:
         self.df = {}
         self.docs = 1
         self.changed = False
+        self.filename = None
+
+    def observedfrequency(self, item):
+        if item in self.globalfrequency:
+            return self.globalfrequency[item]
+        else:
+            return 0
 
     def frequencyweight(self, word, streaming=True):
         try:
@@ -55,27 +62,31 @@ class LanguageModel:
 
     def importstats(self, wordstatsfile: str) -> None:
         ''' Read file with lines of item-tab-item frequency to provide basis for weighting etc. '''
-        with open(wordstatsfile) as savedstats:
-            i = 0
-            for line in savedstats:
-                i += 1
-                try:
-                    seqstats = line.rstrip().split("\t")
-                    if not self.contains(seqstats[0]):
-                        self.additem(seqstats[0])
-                    self.globalfrequency[seqstats[0]] = int(seqstats[1])
-                    if len(seqstats) > 2:
-                        self.df[seqstats[0]] = int(seqstats[2])
-                    self.bign += int(seqstats[1])
-                except IndexError:
-                    logger(str(i) + " " + line.rstrip(), error)
+        self.filename = wordstatsfile
+        try:
+            with open(wordstatsfile) as savedstats:
+                i = 0
+                for line in savedstats:
+                    i += 1
+                    try:
+                        seqstats = line.rstrip().split("\t")
+                        if not self.contains(seqstats[0]):
+                            self.additem(seqstats[0])
+                        self.globalfrequency[seqstats[0]] = int(seqstats[1])
+                        if len(seqstats) > 2:
+                            self.df[seqstats[0]] = int(seqstats[2])
+                        self.bign += int(seqstats[1])
+                    except IndexError:
+                        logger(str(i) + " " + line.rstrip(), error)
+        except:
+            logger("Could not open {}".format(wordstatsfile), error)
 
+    def save(self) -> None:
+        if self.filename:
+            with open(self.filename, "w+") as savedstats:
+                for w in self.globalfrequency:
+                    savedstats.write("{}\t{}\n".format(w, self.globalfrequency[w]))
+        else:
+            logger("No outfilename defined", error)
+        self.changed = False
 
-    def readstats(filename: str = "/home/jussi/data/resources/finfreqcountwoutdigits.list") -> None:
-        '''Deprecated, will disappear.'''
-        global stats
-        stats = {}
-        with open(filename) as statsfile:
-            for statsline in statsfile:
-                values = statsline.strip().split("\t")
-                stats[values[2]] = float(values[1])
