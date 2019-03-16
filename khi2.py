@@ -2,7 +2,7 @@ import numpy as np
 from logger import logger
 import math
 
-def khi2(crosstab, loglevel=False):
+def khi2(crosstab, loglevel=False, onetailed=False):
     d = crosstab.shape
     if (len (d)  > 2):
         raise("Wrong format for this function")
@@ -23,6 +23,9 @@ def khi2(crosstab, loglevel=False):
         for l in range(cols):
             deviation[k,l]=((expecteds[k,l]-crosstab[k,l]))
             sum += deviation[k,l]**2/expecteds[k,l]
+    if onetailed:
+        if expecteds[0,0] > crosstab[0,0]:
+            sum = -sum
     streng += str(crosstab) + "\n" + str(deviation) + "\n" + str(sum) + "\n"
     logger(streng, loglevel)
     return sum
