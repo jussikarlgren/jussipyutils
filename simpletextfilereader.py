@@ -147,6 +147,21 @@ def doonecsvfile(filename, loglevel=False):
     return sentencelist
 
 
+def doonerawtextfile(filename, loglevel=False):
+    '''Read one file with texts, one per line.'''
+    logger(filename, loglevel)
+    sentencelist = []
+    with open(filename, errors="replace", encoding='utf-8') as inputtextfile:
+        logger("Loading " + filename, loglevel)
+        for textline in inputtextfile:
+            try:
+#                words = word_tokenize(textline.lower())
+                sents = sent_tokenize(textline)
+                for sentence in sents:
+                    logger(sentence, debug)
+                    sentencelist = sentencelist + sents
+    return sentencelist
+
 
 def readstats(filename: str = "/home/jussi/data/resources/finfreqcountwoutdigits.list") -> None:
     global stats
@@ -155,3 +170,4 @@ def readstats(filename: str = "/home/jussi/data/resources/finfreqcountwoutdigits
         for statsline in statsfile:
             values = statsline.strip().split("\t")
             stats[values[2]] = float(values[1])
+
