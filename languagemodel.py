@@ -1,3 +1,4 @@
+import simpletextfilereader
 from logger import logger
 from math import log
 from math import exp
@@ -90,3 +91,7 @@ class LanguageModel:
             logger("No outfilename defined", error)
         self.changed = False
 
+
+    def trainfromfiles(self, resourcedirectory:str):
+        simpletextfilereader.getfilelist(resourcedirectory,r"[a-zA-Z0-9].*.txt")
+        for f in

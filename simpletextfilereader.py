@@ -21,7 +21,8 @@ urlpatternexpression = re.compile(r"https?://[/A-Za-z0-9\.\-\?_]+", re.IGNORECAS
 handlepattern = re.compile(r"@[A-Za-z0-9_\-±.]+", re.IGNORECASE)
 
 
-def getfilelist(resourcedirectory="/home/jussi/data/storm/fixed", pattern=re.compile(r".*irma")):
+def getfilelist(resourcedirectory:str="/home/jussi/data/storm/fixed", patternstring:str=r".*irma"):
+    pattern = re.compile(patternstring)
     filenamelist = []
     for filenamecandidate in os.listdir(resourcedirectory):
         if pattern.match(filenamecandidate):
@@ -31,10 +32,16 @@ def getfilelist(resourcedirectory="/home/jussi/data/storm/fixed", pattern=re.com
     return sorted(filenamelist)
 
 
-def readtexts() -> list:
+def readtexts(json=True) -> list:
     '''Read a set of files and return sentences found in them.'''
     filenamelist = getfilelist()
-    sentences = dojsontextfiles(filenamelist, debug)
+    if json:
+        sentences = dojsontextfiles(filenamelist, debug)
+    else:
+        sentences = []
+        for f in filenamelist:
+            ss = doonerawtextfile()
+            sentences = sentences + ss
     return sentences
 
 
