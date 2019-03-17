@@ -154,12 +154,11 @@ def doonerawtextfile(filename, loglevel=False):
     with open(filename, errors="replace", encoding='utf-8') as inputtextfile:
         logger("Loading " + filename, loglevel)
         for textline in inputtextfile:
-            try:
 #                words = word_tokenize(textline.lower())
-                sents = sent_tokenize(textline)
-                for sentence in sents:
-                    logger(sentence, debug)
-                    sentencelist = sentencelist + sents
+            sents = sent_tokenize(textline)
+            for sentence in sents:
+                logger(sentence, debug)
+                sentencelist = sentencelist + sents
     return sentencelist
 
 
