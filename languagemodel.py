@@ -92,6 +92,3 @@ class LanguageModel:
         self.changed = False
 
 
-    def trainfromfiles(self, resourcedirectory:str):
-        simpletextfilereader.getfilelist(resourcedirectory,r"[a-zA-Z0-9].*.txt")
-        for f in
