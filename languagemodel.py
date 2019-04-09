@@ -1,4 +1,3 @@
-import simpletextfilereader
 from logger import logger
 from math import log
 from math import exp
