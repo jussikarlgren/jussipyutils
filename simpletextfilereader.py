@@ -170,3 +170,48 @@ def readstats(filename: str = "/home/jussi/data/resources/finfreqcountwoutdigits
             values = statsline.strip().split("\t")
             stats[values[2]] = float(values[1])
 
+
+def dotweetfiles(filenamelist1, loglevel=False):
+    tweetantal = 0
+    sentencelist = []
+    filenamelist = sorted(filenamelist1)
+    logger("Starting tweet file processing ", loglevel)
+    logger(str(filenamelist), loglevel)
+    for filename in filenamelist:
+        sl = doonetweetfile(filename, loglevel)
+        sentencelist = sentencelist + sl
+        tweetantal += len(sl)
+
+def doonetweetfile(filename, filtersetofstrings:set=None, loglevel=False):
+    logger(filename, loglevel)
+    date = filename.split(".")[-5].split("/")[-1]
+    sentencelist = []
+    with open(filename, errors="replace", encoding='utf-8') as tweetfile:
+        logger("Loading " + filename, loglevel)
+        try:
+            data = json.load(tweetfile)
+        except json.decoder.JSONDecodeError as e:
+            logger("***" + filename + str(e.msg), error)
+            data = []
+        logger("Loaded", loglevel)
+        for tw in data:
+            try:
+                text = tw["rawText"]
+                text = urlpatternexpression.sub("URL", text)
+                text = handlepattern.sub("HANDLE", text)
+                words = word_tokenize(text.lower())
+                if filtersetofstrings and set(words).isdisjoint(filtersetofstrings):
+                    continue
+                if words[0] == "rt":
+                    continue
+                else:
+                    sents = sent_tokenize(text)
+                    for sentence in sents:
+                        question = False
+                        logger(sentence, debug)
+                        words = word_tokenize(sentence)
+                        sentencelist = sentencelist + sents
+            except KeyError:
+                if str(tw) != "{}":  # never mind empty strings, no cause for alarm
+                    logger("**** " + str(tw) + " " + str(len(sentencelist)), error)
+    return sentencelist
