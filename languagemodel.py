@@ -3,8 +3,9 @@ from math import log
 from math import exp
 error = True  # log level
 
+
 class LanguageModel:
-    '''Tracks occurrence frequencies of observed items and provides frequency-based weights for the same.'''
+    """Tracks occurrence frequencies of observed items and provides frequency-based weights for the same."""
     def __init__(self):
         self.globalfrequency = {}
         self.bign = 0
@@ -22,13 +23,13 @@ class LanguageModel:
     def frequencyweight(self, word, streaming=True):
         try:
             if streaming:
-                l = 500
-                w = exp(-l * self.globalfrequency[word] / self.bign)
+                ell = 500
+                w = exp(-ell * self.globalfrequency[word] / self.bign)
                 #
                 # 1 - math.atan(self.globalfrequency[word] - 1) / (0.5 * math.pi)  # ranges between 1 and 1/3
             else:
                 if word in self.df:
-                    w = log((self.docs) / (self.df[word] - 0.5))
+                    w = log(self.docs / (self.df[word] - 0.5))
                 else:
                     w = log(self.bign / (self.globalfrequency[word]))
         except (ValueError, KeyError):
@@ -61,7 +62,7 @@ class LanguageModel:
             return False
 
     def importstats(self, wordstatsfile: str) -> None:
-        ''' Read file with lines of item-tab-item frequency to provide basis for weighting etc. '''
+        """ Read file with lines of item-tab-item frequency to provide basis for weighting etc. """
         self.filename = wordstatsfile
         try:
             with open(wordstatsfile) as savedstats:
@@ -89,5 +90,3 @@ class LanguageModel:
         else:
             logger("No outfilename defined", error)
         self.changed = False
-
-
