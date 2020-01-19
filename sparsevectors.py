@@ -81,7 +81,7 @@ def newrandomvector(n, denseness):
     if denseness % 2 != 0:
         denseness += 1
     if denseness > 0:  # no need to be careful about this, right? and k % 2 == 0):
-        nonzeros = random.sample(list(range(n)), denseness)
+        nonzeros = random.sample(range(n), denseness)
         negatives = random.sample(nonzeros, denseness // 2)
         for i in nonzeros:
             vec[i] = 1
@@ -137,20 +137,32 @@ def sparselength(vec, rounding=True):
     return length
 
 
-def comb(vec, k: float, dim: int):
+def comb(vec, k, dim):
     """
     Reduce the items of a vector, retaining only the ones with highest absolute value.
     K is the proportion of retained items.
     """
+    return combbythreshold(vec, k)
+
+
+def combbyproportion(vec, k, dim):
     newvector = {}
-    n = int(k * dim / 2)
+    n = (k * dim) // 2
     sorted_items = sorted(vec.items(), key=lambda x: x[1])
     bot = sorted_items[:n]
     top = sorted_items[-n:]
-    for l in bot:
-        newvector[l[0]] = 0
-    for l in top:
-        newvector[l[0]] = l[1]
+    for key in bot:
+        newvector[key[0]] = key[1]
+    for key in top:
+        newvector[key[0]] = key[1]
+    return newvector
+
+
+def combbythreshold(vec, threshold):
+    newvector = {}
+    for l in vec:
+        if vec[l] > threshold:
+            newvector[l] = vec[l]
     return newvector
 
 
@@ -212,7 +224,8 @@ def permute(vector, permutation):
 def vectorsaturation(vector):
     d = 0
     for c in vector:   # should be done by any([v > 1 in vector]) or something like it
-        d += 1
+        if vector[c] != 0:
+            d += 1
     return d
 
 
@@ -250,7 +263,7 @@ def centroid(vectors: list):
     return normalise(c)
 
 
-def averagedistance(origin: list, vectors: list, loglevel: bool = False):
+def averagedistance(origin: list, vectors: list):
     o = 0
     for v in vectors:
         s = sparsecosine(origin, v)
@@ -267,3 +280,5 @@ def listify(vector, dimensionality):
     for e in vector:
         listelements[e] = vector[e]
     return listelements
+
+

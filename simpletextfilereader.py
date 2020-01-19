@@ -200,7 +200,7 @@ def readstats(filename: str = "/home/jussi/data/resources/finfreqcountwoutdigits
             stats[values[2]] = float(values[1])
 
 
-def dotweetfiles(filenamelist1, loglevel=False):
+def dotweetfiles(datadirectory, filenamelist1, loglevel=False):
     tweetantal = 0
     sentencelist = []
     filenamelist = sorted(filenamelist1)
