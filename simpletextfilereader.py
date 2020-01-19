@@ -148,17 +148,46 @@ def doonecsvfile(filename, loglevel=False):
 
 
 def doonerawtextfile(filename, loglevel=False):
-    '''Read one file with texts, one per line.'''
+    '''Read one file with texts, one text per line.'''
     logger(filename, loglevel)
     sentencelist = []
     with open(filename, errors="replace", encoding='utf-8') as inputtextfile:
         logger("Loading " + filename, loglevel)
         for textline in inputtextfile:
-#                words = word_tokenize(textline.lower())
+            #     words = word_tokenize(textline.lower())
             sents = sent_tokenize(textline)
             for sentence in sents:
                 logger(sentence, debug)
                 sentencelist = sentencelist + sents
+    return sentencelist
+
+
+def doonerawtextfileonmanylines(filename, loglevel=False):
+    '''Read one file with texts, join everyting and sentence split it, which can be expensive.'''
+    logger(filename, loglevel)
+    sentencelist = []
+    with open(filename, errors="replace", encoding='utf-8') as inputtextfile:
+        logger("Loading " + filename, loglevel)
+        txt = ""
+        for textline in inputtextfile:
+            txt += textline.replace("\n", " ").lstrip()
+#                words = word_tokenize(textline.lower())
+        sents = sent_tokenize(txt)
+        for sentence in sents:
+            logger(sentence, debug)
+            sentencelist = sentencelist + sents
+    return sentencelist
+
+
+def doonetextfilewithonesentenceperline(filename, loglevel=False):
+    '''Read one file with sentences, one per line.'''
+    logger(filename, loglevel)
+    sentencelist = []
+    with open(filename, errors="replace", encoding='utf-8') as inputtextfile:
+        logger("Loading " + filename, loglevel)
+        for textline in inputtextfile:
+            txt = textline.replace("\n", " ").lstrip()
+            sentencelist = sentencelist + [txt]
     return sentencelist
 
 

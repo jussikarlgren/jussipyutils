@@ -60,6 +60,7 @@ def sparsexor(onevec, othvec):
 def newemptyvector(n):
     return {}
 
+
 def inverse(originalvector, dim):
     vector = newemptyvector(dim)
     for i in range(dim):
@@ -73,6 +74,7 @@ def newfullvector(n, val=1):
     for i in range(n):
         vector[i] = val
     return vector
+
 
 def newrandomvector(n, denseness):
     vec = {}
@@ -135,7 +137,11 @@ def sparselength(vec, rounding=True):
     return length
 
 
-def comb(vec, k, dim):
+def comb(vec, k: float, dim: int):
+    """
+    Reduce the items of a vector, retaining only the ones with highest absolute value.
+    K is the proportion of retained items.
+    """
     newvector = {}
     n = int(k * dim / 2)
     sorted_items = sorted(vec.items(), key=lambda x: x[1])
@@ -165,6 +171,7 @@ def normalise(vec):
         newvector = vec
     return newvector
 
+
 def concatenate(vec1, dim1, vec2):
     vector = {}
     for i in vec1:
@@ -172,6 +179,7 @@ def concatenate(vec1, dim1, vec2):
     for i in vec2:
         vector[i + dim1] = vec2[i]
     return vector
+
 
 def modify(vec, factor):
     newvector = {}
@@ -242,7 +250,7 @@ def centroid(vectors: list):
     return normalise(c)
 
 
-def averagedistance(origin: list, vectors: list, loglevel: bool=False):
+def averagedistance(origin: list, vectors: list, loglevel: bool = False):
     o = 0
     for v in vectors:
         s = sparsecosine(origin, v)
@@ -253,11 +261,9 @@ def averagedistance(origin: list, vectors: list, loglevel: bool=False):
 
 
 def listify(vector, dimensionality):
-    '''Take a sparse vector which here is implemented as a dict and return its elements, filling up with zeros where
-    no elements are given in the sparse vector.'''
+    """Take a sparse vector which here is implemented as a dict and return its elements, filling up with zeros where
+    no elements are given in the sparse vector."""
     listelements = [0] * dimensionality
     for e in vector:
         listelements[e] = vector[e]
     return listelements
-
-
