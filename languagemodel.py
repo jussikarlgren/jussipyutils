@@ -1,6 +1,7 @@
 from logger import logger
 from math import log
 from math import exp
+from math import atan, pi
 error = True  # log level
 
 
@@ -13,6 +14,8 @@ class LanguageModel:
         self.docs = 1
         self.changed = False
         self.filename = None
+        self.maxdf = 1
+        self.maxfreq = 0
 
     def observedfrequency(self, item):
         if item in self.globalfrequency:
@@ -20,7 +23,8 @@ class LanguageModel:
         else:
             return 0
 
-    def frequencyweight(self, word, streaming=True):
+    def frequencyweight2(self, word, streaming=True):
+        '''Needs work'''
         try:
             if streaming:
                 ell = 500
@@ -29,9 +33,33 @@ class LanguageModel:
                 # 1 - math.atan(self.globalfrequency[word] - 1) / (0.5 * math.pi)  # ranges between 1 and 1/3
             else:
                 if word in self.df:
-                    w = log(self.docs / (self.df[word] - 0.5))
+                    w = atan(0.5 + self.docs / self.df[word]) / (0.5 * pi)  # ranges between 1 and 1/3
                 else:
-                    w = log(self.bign / (self.globalfrequency[word]))
+                    w = atan(0.5 + self.bign / self.globalfrequency[word]) / (0.5 * pi)  # ranges between 1 and 1/3
+        except (ValueError, KeyError):
+            w = 0.3
+        return w
+
+    def hiloweight(self, word):
+        '''Experimental'''
+        noise = 10
+        try:
+            if word in self.df:
+                interest = self.maxdf / 5
+                stop = self.maxdf / 3
+                wf = self.df[word]
+            else:
+                interest = self.maxfreq / 4
+                stop = self.maxfreq / 2
+                wf = self.globalfrequency[word]
+            if wf < noise:  # oov or typo or summat
+                w = 0.3
+            elif wf < interest:  # interesting word
+                w = 0.9
+            elif wf < stop:  # frequent word
+                w = 0.2
+            else:
+                w = 0.1   # stopword
         except (ValueError, KeyError):
             w = 0.3
         return w
@@ -40,9 +68,15 @@ class LanguageModel:
         self.docs += 1
         self.changed = True
 
+    def frequencyweight(self, word, streaming=True):
+        return self.hiloweight(word)
+
     def additem(self, item, frequency=0):
         if not self.contains(item):
             self.globalfrequency[item] = frequency
+            if frequency > self.maxfreq:
+                self.maxfreq = frequency
+            self.df[item] = 1
             self.bign += frequency
             self.changed = True
 
@@ -89,8 +123,13 @@ class LanguageModel:
                         if not self.contains(seqstats[0]):
                             self.additem(seqstats[0])
                         self.globalfrequency[seqstats[0]] = int(seqstats[1])
+                        if self.maxfreq < self.globalfrequency[seqstats[0]]:
+                            self.maxfreq = self.globalfrequency[seqstats[0]]
                         if len(seqstats) > 2:
                             self.df[seqstats[0]] = int(seqstats[2])
+                            if self.maxdf < self.df[seqstats[0]]:
+                                self.maxdf = self.df[seqstats[0]]
+                            self.docs += int(seqstats[2])
                         self.bign += int(seqstats[1])
                     except IndexError:
                         logger(f"""{i} {seqstats} {line.rstrip()}""", error)
