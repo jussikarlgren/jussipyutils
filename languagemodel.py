@@ -36,6 +36,10 @@ class LanguageModel:
             w = 0.3
         return w
 
+    def adddoc(self, name=""):
+        self.docs += 1
+        self.changed = True
+
     def additem(self, item, frequency=0):
         if not self.contains(item):
             self.globalfrequency[item] = frequency
@@ -55,6 +59,17 @@ class LanguageModel:
             self.globalfrequency[word] = 1
         self.changed = True
 
+    def observedococcurrence(self, word):
+        if self.contains(word):
+            if word in self.df:
+                self.df[word] += 1
+            else:
+                self.df[word] = 1
+        else:
+            self.globalfrequency[word] = 0
+            self.df[word] = 1
+        self.changed = True
+
     def contains(self, item):
         if item in self.globalfrequency:
             return True
@@ -65,7 +80,7 @@ class LanguageModel:
         """ Read file with lines of item-tab-item frequency to provide basis for weighting etc. """
         self.filename = wordstatsfile
         try:
-            with open(wordstatsfile) as savedstats:
+            with open(wordstatsfile, "r") as savedstats:
                 i = 0
                 for line in savedstats:
                     i += 1
@@ -78,15 +93,19 @@ class LanguageModel:
                             self.df[seqstats[0]] = int(seqstats[2])
                         self.bign += int(seqstats[1])
                     except IndexError:
-                        logger(str(i) + " " + line.rstrip(), error)
-        except:
+                        logger(f"""{i} {seqstats} {line.rstrip()}""", error)
+        except FileNotFoundError:
             logger("Could not open {}".format(wordstatsfile), error)
 
     def save(self) -> None:
         if self.filename:
             with open(self.filename, "w+") as savedstats:
                 for w in self.globalfrequency:
-                    savedstats.write("{}\t{}\n".format(w, self.globalfrequency[w]))
+                    if w in self.df:
+                        s = f"""{w}\t{self.globalfrequency[w]}\t{self.df[w]}\n"""
+                    else:
+                        s = f"""{w}\t{self.globalfrequency[w]}\n"""
+                    savedstats.write(s)
         else:
             logger("No outfilename defined", error)
         self.changed = False

@@ -211,6 +211,7 @@ def dotweetfiles(datadirectory, filenamelist1, loglevel=False):
         sentencelist = sentencelist + sl
         tweetantal += len(sl)
 
+
 def doonetweetfile(filename, filtersetofstrings:set=None, loglevel=False):
     logger(filename, loglevel)
     date = filename.split(".")[-5].split("/")[-1]
@@ -244,3 +245,9 @@ def doonetweetfile(filename, filtersetofstrings:set=None, loglevel=False):
                 if str(tw) != "{}":  # never mind empty strings, no cause for alarm
                     logger("**** " + str(tw) + " " + str(len(sentencelist)), error)
     return sentencelist
+
+
+# to make use of nltk without having to import it to surrounding projects
+def words_of_a_sentence(sentence: str):
+    words = word_tokenize(sentence)   
+    return words
