@@ -142,12 +142,12 @@ def comb(vec, k, dim):
     Reduce the items of a vector, retaining only the ones with highest absolute value.
     K is the proportion of retained items.
     """
-    return combbyproportion(vec, k)
+    return combbyproportion(vec, k, dim)
 
 
 def combbyproportion(vec, k, dim):
     newvector = {}
-    n = (k * dim) // 2
+    n = int((k * dim) // 2)
     sorted_items = sorted(vec.items(), key=lambda x: x[1])
     bot = sorted_items[:n]
     top = sorted_items[-n:]
