@@ -249,5 +249,23 @@ def doonetweetfile(filename, filtersetofstrings:set=None, loglevel=False):
 
 # to make use of nltk without having to import it to surrounding projects
 def words_of_a_sentence(sentence: str):
-    words = word_tokenize(sentence)   
+    words = word_tokenize(sentence)
     return words
+
+
+
+# show_uri	show_name show_description	publisher	language	rss_link	episode_uri	episode_name	episode_description	duration	show_filename_prefix	episode_filename_prefix
+def readtsvfile(filename, loglevel=False):
+    '''Read one file with tsv lines such and return the text found in the specified slots.'''
+    logger(filename, loglevel)
+    sentencelist = []
+    with open(filename, errors="replace", newline="", encoding='utf-8') as inputtextfile:
+        logger("Loading " + filename, loglevel)
+        linereader = csv.reader(inputtextfile, delimiter='\t', quotechar='"')
+        for line in linereader:
+            id = line[0]
+            showdescription = word_tokenize(line[2])
+            episodedescription = word_tokenize(line[8])
+            episodetitle = word_tokenize(line[7])
+            showtitle = word_tokenize(line[1])
+    return [id, showtitle, episodetitle, showdescription, episodedescription]
