@@ -1,11 +1,45 @@
 import simpletextfilereader
 from nltk import sent_tokenize
-from random import random
+from random import random, shuffle
 import json
-from splitstream import splitfile
+#from splitstream import splitfile
 
 
-# class BrownCorpus(object):
+datadirectory = "/Users/jik/data/"
+
+
+class SwitchboardCorpus(object):
+    samplingrate = 0.1
+
+    def __init__(self, s: float = 0.7):  # corpus is small
+        self.samplingrate = s
+
+    def __iter__(self):
+        files = simpletextfilereader.getfilelist(datadirectory + "switchboard/cleaned", ".*utt")
+        shuffle(files)
+        for file in files:
+            for utterance in open(file, "r"):
+                if random() < self.samplingrate:
+                    yield utterance
+
+
+class MovieDialogueCorpus(object):
+    samplingrate = 0.3
+
+    def __init__(self, s: float = 0.3):
+        self.samplingrate = s
+
+    def __iter__(self):
+        files = simpletextfilereader.getfilelist(datadirectory + "moviescriptsUCSC/cleaned_jan_2021", ".*txt")
+        shuffle(files)
+        for file in files:
+            for line in open(file, "r"):
+                sents = sent_tokenize(line)
+                for s in sents:
+                    if random() < self.samplingrate:
+                        yield s
+
+
 class MicroblogCorpus(object):
     samplingrate = 0.1
 
@@ -13,7 +47,8 @@ class MicroblogCorpus(object):
         self.samplingrate = s
 
     def __iter__(self):
-        files = simpletextfilereader.getfilelist("/Users/jik/data/microblog/storm", ".*.EN.twitter.*")
+        files = simpletextfilereader.getfilelist(datadirectory + "microblog/storm", ".*.EN.twitter.*")
+        shuffle(files)
         for file in files:
             with open(file, "r+") as fff:
                 for jsonstr in splitfile(fff, format="json"):
@@ -31,7 +66,8 @@ class NotReallyBlogCorpusBecause2017ItWasAllNewsAndSpam(object):
         self.samplingrate = s
 
     def __iter__(self):
-        files = simpletextfilereader.getfilelist("/Users/jik/data/socialmedia", ".*blog")
+        files = simpletextfilereader.getfilelist(datadirectory + "socialmedia", ".*blog")
+        shuffle(files)
         for file in files:
             with open(file, "r+") as fff:
                 for jsonstr in splitfile(fff, format="json"):
@@ -49,7 +85,8 @@ class BlogCorpus(object):
         self.samplingrate = s
 
     def __iter__(self):
-        files = simpletextfilereader.getfilelist("/Users/jik/data/blogs", ".*xml")
+        files = simpletextfilereader.getfilelist(datadirectory + "blogs", ".*xml")
+        shuffle(files)
         j = 0
         for file in files:
             i = 0
@@ -75,7 +112,7 @@ class NewsCorpus(object):
         self.samplingrate = s
 
     def __iter__(self):
-        for line in open("/Users/jik/data/news/apauthor.txt"):
+        for line in open(datadirectory + "news/apauthor.txt"):
             # assume there's one document per line, tokens separated by whitespace
             (author, article) = line.split("\t")
             sents = sent_tokenize(article)
@@ -91,7 +128,8 @@ class PodcastTranscriptCorpus(object):
         self.samplingrate = s
 
     def __iter__(self):
-        files = simpletextfilereader.getfilelist("/Users/jik/data/podcasts/trec-podcasts/transcript_raw", ".*txt")
+        files = simpletextfilereader.getfilelist(datadirectory + "podcasts/transcript_raw", ".*txt")
+        shuffle(files)
         for file in files:
             for line in open(file, "r"):
                 sents = sent_tokenize(line)
