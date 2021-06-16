@@ -142,7 +142,7 @@ def comb(vec, k, dim):
     Reduce the items of a vector, retaining only the ones with highest absolute value.
     K is the proportion of retained items.
     """
-    return combbythreshold(vec, k)
+    return combbyproportion(vec, k)
 
 
 def combbyproportion(vec, k, dim):
